@@ -1,1623 +1,1174 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ananya P - BSc Computer Science and Mathematics graduate portfolio featuring interactive 3D visuals, projects, skills, and certifications.">
+    <meta name="keywords" content="Ananya P, Computer Science, Mathematics, Python, Flask, JavaScript, Three.js, WebGL, 3D Web Graphics, Web Developer, Portfolio">
+    <meta name="author" content="Ananya P">
+    <title>Ananya P | Computer Science Graduate & Developer</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <meta
-        name="description"
-        content="Ananya P - BSc Computer Science and Mathematics graduate portfolio showcasing skills, projects, education, certifications and professional profile."
-    >
+    <!-- Three.js Library for 3D Background Visuals -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <meta
-        name="keywords"
-        content="Ananya P, Computer Science, Mathematics, Python, Flask, JavaScript, SQL, Web Developer, Portfolio"
-    >
+    <!-- Tailwind Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastelBg: '#FDFBF7',       /* Cream/Warm Ivory */
+                        pastelSage: '#C7D39C',     /* Light Sage Green */
+                        pastelMoss: '#8FA368',     /* Soft Moss Green */
+                        pastelDeepMoss: '#5A6E3B', /* Dark Sage Accent */
+                        pastelPeach: '#FCD8AC',    /* Soft Peach */
+                        pastelOrange: '#FBAF67',   /* Warm Coral/Orange */
+                        pastelPink: '#F98B88',     /* Soft Coral Pink */
+                        pastelDark: '#2D3528',     /* Dark Botanical Gray/Green */
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'sans-serif'],
+                        body: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'pastel-glow': '0 10px 30px -10px rgba(251, 175, 103, 0.35)',
+                        'sage-glow': '0 10px 30px -10px rgba(143, 163, 104, 0.3)',
+                        '3d-card': '0 20px 40px -15px rgba(90, 110, 59, 0.12), 0 0 15px rgba(253, 216, 172, 0.2)',
+                    }
+                }
+            }
+        }
+    </script>
 
-    <meta
-        name="author"
-        content="Ananya P"
-    >
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FDFBF7;
+            color: #2D3528;
+            overflow-x: hidden;
+        }
 
-    <title>Ananya P | Computer Science Graduate</title>
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
 
+        /* Fixed Three.js canvas layer behind text */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
 
-    <!-- =====================================
-         GOOGLE FONT
-    ====================================== -->
+        /* Glassmorphism cards */
+        .glass-card {
+            background: rgba(253, 251, 247, 0.72);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 8px 32px 0 rgba(143, 163, 104, 0.08);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+            transform-style: preserve-3d;
+        }
 
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
+        .glass-card:hover {
+            border-color: rgba(251, 175, 103, 0.6);
+            box-shadow: 0 20px 40px -10px rgba(249, 139, 136, 0.22), 0 0 20px rgba(199, 211, 156, 0.35);
+        }
 
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+        /* Floating elements animation */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+        @keyframes floatMedium {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-18px) rotate(-3deg); }
+        }
 
+        .animate-float-slow {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
 
-    <!-- CSS -->
+        .animate-float-medium {
+            animation: floatMedium 4.5s ease-in-out infinite;
+        }
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+        /* Profile avatar glow halo */
+        .avatar-halo {
+            background: linear-gradient(135deg, #FCD8AC 0%, #FBAF67 50%, #F98B88 100%);
+            filter: blur(25px);
+            opacity: 0.65;
+            transition: all 0.5s ease;
+        }
 
+        .profile-container:hover .avatar-halo {
+            opacity: 0.9;
+            filter: blur(35px);
+            transform: scale(1.08);
+        }
+
+        /* Scroll reveal triggers */
+        .reveal {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C7D39C;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8FA368;
+        }
+    </style>
 </head>
 
+<body class="relative selection:bg-pastelOrange selection:text-white">
 
-<body>
+    <!-- 3D Interactive Three.js Blooming Lotus Canvas -->
+    <canvas id="bg-canvas"></canvas>
 
-
-    <!-- =====================================
-         NAVIGATION
-    ====================================== -->
-
-    <header class="header">
-
-        <nav class="navbar">
-
-
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <!-- Logo -->
-
-            <a
-                href="#home"
-                class="logo"
-            >
-                Portfolio<span>.</span>
+            <a href="#home" class="font-display font-extrabold text-2xl tracking-tight text-pastelDark flex items-center gap-1 group">
+                <span class="bg-gradient-to-r from-pastelDeepMoss to-pastelOrange bg-clip-text text-transparent group-hover:scale-105 transition-transform">Portfolio</span>
+                <span class="text-pastelPink text-3xl leading-none">.</span>
             </a>
 
-
-            <!-- Mobile Menu Button -->
-
-            <button
-                class="menu-btn"
-                id="menuBtn"
-                type="button"
-                aria-label="Open navigation menu"
-                aria-expanded="false"
-            >
-
-                <span></span>
-                <span></span>
-                <span></span>
-
-            </button>
-
-
             <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-1 bg-white/75 backdrop-blur-md px-4 py-2 rounded-full border border-white/80 shadow-sm">
+                <a href="#home" class="px-4 py-2 text-sm font-semibold text-pastelDark/80 hover:text-pastelDeepMoss hover:bg-pastelSage/20 rounded-full transition-all">Home</a>
+                <a href="#about" class="px-4 py-2 text-sm font-semibold text-pastelDark/80 hover:text-pastelDeepMoss hover:bg-pastelSage/20 rounded-full transition-all">About</a>
+                <a href="#skills" class="px-4 py-2 text-sm font-semibold text-pastelDark/80 hover:text-pastelDeepMoss hover:bg-pastelSage/20 rounded-full transition-all">Skills</a>
+                <a href="#projects" class="px-4 py-2 text-sm font-semibold text-pastelDark/80 hover:text-pastelDeepMoss hover:bg-pastelSage/20 rounded-full transition-all">Projects</a>
+                <a href="#creative" class="px-4 py-2 text-sm font-semibold text-pastelDark/80 hover:text-pastelDeepMoss hover:bg-pastelSage/20 rounded-full transition-all">Creative</a>
+                <a href="#training" class="px-4 py-2 text-sm font-semibold text-pastelDark/80 hover:text-pastelDeepMoss hover:bg-pastelSage/20 rounded-full transition-all">Training</a>
+                <a href="#resume" class="px-4 py-2 text-sm font-semibold text-pastelDark/80 hover:text-pastelDeepMoss hover:bg-pastelSage/20 rounded-full transition-all">Resume</a>
+                <a href="#contact" class="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-pastelOrange to-pastelPink hover:from-pastelOrange/90 hover:to-pastelPink/90 rounded-full shadow-sm hover:shadow-pastel-glow transition-all">Contact</a>
+            </nav>
 
-            <ul
-                class="nav-links"
-                id="navLinks"
-            >
+            <!-- Mobile Menu Toggle -->
+            <button id="menuBtn" type="button" aria-label="Open navigation menu" aria-expanded="false" class="md:hidden p-3 rounded-2xl bg-white/80 text-pastelDark border border-white shadow-sm focus:outline-none">
+                <i class="fa-solid fa-bars text-xl" id="menuIcon"></i>
+            </button>
+        </div>
 
-                <li>
-                    <a href="#home">
-                        Home
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#about">
-                        About
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#skills">
-                        Skills
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#projects">
-                        Projects
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#training">
-                        Training
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#resume">
-                        Resume
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#contact">
-                        Contact
-                    </a>
-                </li>
-
-            </ul>
-
-        </nav>
-
+        <!-- Mobile Drawer -->
+        <div id="mobileMenu" class="hidden md:hidden fixed inset-x-4 top-20 bg-white/95 backdrop-blur-xl rounded-3xl p-6 border border-white shadow-2xl flex flex-col gap-3 text-center">
+            <a href="#home" class="mobile-link py-3 text-base font-semibold text-pastelDark hover:bg-pastelSage/20 rounded-xl">Home</a>
+            <a href="#about" class="mobile-link py-3 text-base font-semibold text-pastelDark hover:bg-pastelSage/20 rounded-xl">About</a>
+            <a href="#skills" class="mobile-link py-3 text-base font-semibold text-pastelDark hover:bg-pastelSage/20 rounded-xl">Skills</a>
+            <a href="#projects" class="mobile-link py-3 text-base font-semibold text-pastelDark hover:bg-pastelSage/20 rounded-xl">Projects</a>
+            <a href="#creative" class="mobile-link py-3 text-base font-semibold text-pastelDark hover:bg-pastelSage/20 rounded-xl">Creative</a>
+            <a href="#training" class="mobile-link py-3 text-base font-semibold text-pastelDark hover:bg-pastelSage/20 rounded-xl">Training</a>
+            <a href="#resume" class="mobile-link py-3 text-base font-semibold text-pastelDark hover:bg-pastelSage/20 rounded-xl">Resume</a>
+            <a href="#contact" class="mobile-link py-3 text-base font-semibold text-white bg-gradient-to-r from-pastelOrange to-pastelPink rounded-xl">Contact</a>
+        </div>
     </header>
 
+    <main class="relative z-10 pt-24">
 
-
-    <!-- =====================================
-         MAIN
-    ====================================== -->
-
-    <main>
-
-
-        <!-- =====================================
-             HOME
-        ====================================== -->
-
-        <section
-            id="home"
-            class="hero"
-        >
-
-            <div class="container hero-container">
-
-
-                <!-- Hero Content -->
-
-                <div class="hero-content reveal">
-
-
-                    <p class="welcome-text">
+        <section id="home" class="min-h-[90vh] flex items-center justify-center py-12 px-6">
+            <div class="max-w-7xl mx-auto grid md:grid-cols-12 gap-12 items-center">
+                
+                <div class="md:col-span-7 flex flex-col items-start gap-6 reveal active">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pastelSage/30 border border-pastelSage/50 text-pastelDeepMoss font-medium text-sm">
+                        <span class="w-2.5 h-2.5 rounded-full bg-pastelOrange animate-ping"></span>
                         Welcome to My Personal Portfolio
-                    </p>
+                    </div>
 
-
-                    <h1>
-                        Hi, I'm Ananya P
+                    <h1 class="text-5xl lg:text-7xl font-extrabold text-pastelDark leading-tight">
+                        Hi, I'm <span class="bg-gradient-to-r from-pastelOrange via-pastelPink to-pastelDeepMoss bg-clip-text text-transparent">Ananya P</span>
                     </h1>
 
-
-                    <h3>
-                        <i>
-                            BSc Computer Science & Mathematics Graduate
-                        </i>
+                    <h3 class="text-xl lg:text-2xl font-semibold text-pastelMoss italic">
+                        BSc Computer Science & Mathematics Graduate
                     </h3>
 
-
-                    <p class="hero-description">
-
-                        A passionate and motivated Computer Science graduate
-                        with a strong foundation in software development,
-                        web technologies, databases and data analytics.
-
+                    <p class="text-base lg:text-lg text-pastelDark/80 leading-relaxed max-w-xl">
+                        A passionate Computer Science graduate with a strong foundation in software engineering, web development, databases, and interactive 3D graphics.
                     </p>
 
-
-                    <p class="hero-description">
-
-                        I enjoy building practical applications, automating
-                        repetitive tasks and solving real-world problems
-                        through technology.
-
+                    <p class="text-base lg:text-lg text-pastelDark/80 leading-relaxed max-w-xl">
+                        I specialize in building practical web applications, automating workflows, and blending clean code with aesthetic design thinking.
                     </p>
 
-
-                    <!-- Hero Buttons -->
-
-                    <div class="hero-buttons">
-
-
-                        <a
-                            href="#projects"
-                            class="btn primary-btn"
-                        >
-                            View My Projects
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="#projects" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-pastelOrange to-pastelPink text-white font-bold text-base shadow-pastel-glow hover:scale-105 transition-transform flex items-center gap-2">
+                            <span>View My Projects</span>
+                            <i class="fa-solid fa-arrow-right"></i>
                         </a>
 
-
-                        <a
-                            href="resume.pdf"
-                            download="Ananya-P-Resume.pdf"
-                            class="btn secondary-btn"
-                        >
-                            Download Resume
+                        <a href="resume.pdf" download="Ananya-P-Resume.pdf" class="px-8 py-4 rounded-2xl bg-white/80 border border-pastelSage text-pastelDark font-bold text-base hover:bg-pastelSage/20 hover:scale-105 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-download text-pastelOrange"></i>
+                            <span>Download Resume</span>
                         </a>
-
-
                     </div>
 
-
-                    <!-- Social Links -->
-
-                    <div class="social-links">
-
-
-                        <a
-                            href="https://github.com/ananya30305"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            GitHub
+                    <div class="flex items-center gap-4 pt-4">
+                        <a href="https://github.com/ananya30305" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl bg-white/70 border border-white text-pastelDark font-semibold text-sm hover:text-pastelOrange hover:border-pastelOrange transition-all flex items-center gap-2 shadow-sm">
+                            <i class="fa-brands fa-github text-lg"></i> GitHub
                         </a>
-
-
-                        <a
-                            href="https://linkedin.com/in/ananya-p-6b65b02b4"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            LinkedIn
+                        <a href="https://linkedin.com/in/ananya-p-6b65b02b4" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl bg-white/70 border border-white text-pastelDark font-semibold text-sm hover:text-pastelOrange hover:border-pastelOrange transition-all flex items-center gap-2 shadow-sm">
+                            <i class="fa-brands fa-linkedin text-lg text-blue-600"></i> LinkedIn
                         </a>
-
-
                     </div>
-
                 </div>
 
+                <!-- Avatar visual container -->
+                <div class="md:col-span-5 flex justify-center relative reveal active">
+                    <div id="avatarContainer" class="profile-container relative w-72 h-72 sm:w-88 sm:h-88 lg:w-96 lg:h-96 flex items-center justify-center opacity-0 scale-90 transition-all duration-700 ease-out">
+                        <!-- Glow Halo -->
+                        <div class="avatar-halo absolute inset-0 rounded-full" style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 35%, #fba29d 70%, #fdaf67 100%); filter: blur(30px); opacity: 0.75;"></div>
 
+                        <!-- Main Profile Avatar Frame -->
+                        <div class="glass-card relative w-full h-full rounded-3xl p-3.5 flex items-center justify-center border-2 border-white/90 shadow-3d-card transform transition-transform hover:scale-[1.02] overflow-hidden">
+                            <img id="avatarImage" src="images/profile.png" alt="Ananya P - Personal Portfolio Avatar" class="w-full h-full object-cover rounded-2xl shadow-sm transition-transform duration-300">
+                        </div>
 
-                <!-- Hero Visual -->
+                        <!-- Badge 1: Top Left - Backend & Automation -->
+                        <div class="glass-card absolute -top-5 -left-4 sm:-left-8 px-4 py-2.5 rounded-2xl border border-white/90 shadow-lg animate-float-slow text-xs sm:text-sm font-bold text-pastelDark flex items-center gap-2 hover:border-pastelOrange transition-colors z-20">
+                            <i class="fa-brands fa-python text-pastelOrange text-lg"></i>
+                            <span>Python • Flask</span>
+                        </div>
 
-                <div class="hero-visual reveal">
+                        <!-- Badge 2: Top Right - Interactive 3D Graphics -->
+                        <div class="glass-card absolute -top-3 -right-4 sm:-right-8 px-4 py-2.5 rounded-2xl border border-white/90 shadow-lg animate-float-medium text-xs sm:text-sm font-bold text-pastelDark flex items-center gap-2 hover:border-pastelOrange transition-colors z-20" style="animation-delay: 0.8s;">
+                            <i class="fa-solid fa-cube text-yellow-500 text-base"></i>
+                            <span>Three.js • WebGL 3D</span>
+                        </div>
 
+                        <!-- Badge 3: Middle Right - Frontend & UI Tech -->
+                        <div class="glass-card absolute top-1/2 -right-6 sm:-right-12 transform -translate-y-1/2 px-4 py-2.5 rounded-2xl border border-white/90 shadow-lg animate-float-slow text-xs sm:text-sm font-bold text-pastelDark flex items-center gap-2 hover:border-pastelPink transition-colors z-20" style="animation-delay: 1.2s;">
+                            <i class="fa-brands fa-js text-amber-500 text-lg"></i>
+                            <span>JavaScript • React</span>
+                        </div>
 
-                    <div class="profile-image-wrapper">
+                        <!-- Badge 4: Bottom Left - Database & SQL -->
+                        <div class="glass-card absolute -bottom-5 left-2 sm:-left-4 px-4 py-2.5 rounded-2xl border border-white/90 shadow-lg animate-float-medium text-xs sm:text-sm font-bold text-pastelDark flex items-center gap-2 hover:border-pastelDeepMoss transition-colors z-20" style="animation-delay: 1.8s;">
+                            <i class="fa-solid fa-database text-pastelPink text-base"></i>
+                            <span>SQL • MySQL • SQLite</span>
+                        </div>
 
-                        <img
-                            src="images/profile.png"
-                            alt="Ananya P - Personal Portfolio Profile Illustration"
-                            class="profile-image"
-                        >
-
+                        <!-- Badge 5: Bottom Right - Web Scraping & Playwright -->
+                        <div class="glass-card absolute -bottom-4 -right-2 sm:-right-6 px-4 py-2.5 rounded-2xl border border-white/90 shadow-lg animate-float-slow text-xs sm:text-sm font-bold text-pastelDark flex items-center gap-2 hover:border-pastelOrange transition-colors z-20" style="animation-delay: 2.2s;">
+                            <i class="fa-solid fa-robot text-pastelDeepMoss text-base"></i>
+                            <span>Playwright • Automation</span>
+                        </div>
                     </div>
-
-
-                    <div class="floating-card card-one">
-                        Python • Flask
-                    </div>
-
-
-                    <div class="floating-card card-two">
-                        JavaScript • HTML • CSS
-                    </div>
-
-
-                    <div class="floating-card card-three">
-                        SQL • MySQL • SQLite
-                    </div>
-
-
                 </div>
-
             </div>
-
         </section>
 
+        <section id="about" class="py-20 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                    <p class="text-sm font-extrabold uppercase tracking-widest text-pastelOrange mb-2">About Me</p>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-pastelDark">Computer Science graduate focused on building practical solutions.</h2>
+                </div>
 
+                <div class="grid md:grid-cols-12 gap-8 items-center">
+                    <div class="md:col-span-7 glass-card p-8 sm:p-10 rounded-3xl space-y-4 reveal">
+                        <p class="text-base sm:text-lg text-pastelDark/90 leading-relaxed">
+                            I am a BSc Computer Science and Mathematics graduate with a CGPA of <strong class="text-pastelDeepMoss font-bold">8.12</strong>. I have a strong foundation in programming, web development, databases, software engineering, and data analysis.
+                        </p>
+                        <p class="text-base sm:text-lg text-pastelDark/90 leading-relaxed">
+                            I enjoy developing practical applications that combine clean backend logic with dynamic frontend interfaces and interactive 3D web graphics. My technical stack includes Python, Flask, JavaScript, Three.js, Canvas API, SQL, MySQL, and REST API development.
+                        </p>
+                        <p class="text-base sm:text-lg text-pastelDark/90 leading-relaxed">
+                            I am looking for an entry-level opportunity in software development where I can contribute to real-world projects, bring strong analytical reasoning, and grow into a versatile IT professional.
+                        </p>
+                    </div>
 
-        <!-- =====================================
-             ABOUT
-        ====================================== -->
+                    <div class="md:col-span-5 grid grid-cols-1 gap-4 reveal">
+                        <div class="glass-card p-6 rounded-2xl flex items-center justify-between border-l-4 border-l-pastelOrange">
+                            <div>
+                                <h3 class="text-4xl font-black text-pastelDark">8.12</h3>
+                                <p class="text-sm font-semibold text-pastelMoss uppercase tracking-wider mt-1">CGPA</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-pastelOrange/20 flex items-center justify-center text-pastelOrange text-xl">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                        </div>
 
-        <section
-            id="about"
-            class="section"
-        >
+                        <div class="glass-card p-6 rounded-2xl flex items-center justify-between border-l-4 border-l-pastelSage">
+                            <div>
+                                <h3 class="text-4xl font-black text-pastelDark">2026</h3>
+                                <p class="text-sm font-semibold text-pastelMoss uppercase tracking-wider mt-1">Graduate</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-pastelSage/30 flex items-center justify-center text-pastelDeepMoss text-xl">
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                        </div>
 
-            <div class="container">
+                        <div class="glass-card p-6 rounded-2xl flex items-center justify-between border-l-4 border-l-pastelPink">
+                            <div>
+                                <h3 class="text-4xl font-black text-pastelDark">6</h3>
+                                <p class="text-sm font-semibold text-pastelMoss uppercase tracking-wider mt-1">Projects Built</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-pastelPink/20 flex items-center justify-center text-pastelPink text-xl">
+                                <i class="fa-solid fa-code-fork"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <section class="py-20 px-6 bg-white/40 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                    <p class="text-sm font-extrabold uppercase tracking-widest text-pastelOrange mb-2">Education</p>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-pastelDark">Academic Background</h2>
+                </div>
 
-                <div class="section-heading reveal">
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="glass-card p-8 rounded-3xl relative overflow-hidden group reveal">
+                        <span class="text-6xl font-black text-pastelSage/40 absolute top-4 right-6 group-hover:text-pastelOrange/30 transition-colors">01</span>
+                        <div class="relative z-10 space-y-3">
+                            <span class="px-3 py-1 rounded-full bg-pastelSage/30 text-pastelDeepMoss text-xs font-bold">2023 – 2026</span>
+                            <h3 class="text-xl font-bold text-pastelDark pt-2">BSc Computer Science & Mathematics</h3>
+                            <p class="text-sm text-pastelMoss font-medium">Mahatma Gandhi Memorial College</p>
+                            <p class="text-base font-extrabold text-pastelOrange">CGPA: 8.12</p>
+                        </div>
+                    </div>
 
+                    <div class="glass-card p-8 rounded-3xl relative overflow-hidden group reveal">
+                        <span class="text-6xl font-black text-pastelSage/40 absolute top-4 right-6 group-hover:text-pastelOrange/30 transition-colors">02</span>
+                        <div class="relative z-10 space-y-3">
+                            <span class="px-3 py-1 rounded-full bg-pastelSage/30 text-pastelDeepMoss text-xs font-bold">Senior Secondary</span>
+                            <h3 class="text-xl font-bold text-pastelDark pt-2">Senior Secondary (XII)</h3>
+                            <p class="text-sm text-pastelMoss font-medium">SDM PU College</p>
+                            <p class="text-base font-extrabold text-pastelOrange">Percentage: 80.17%</p>
+                        </div>
+                    </div>
 
-                    <p class="eyebrow">
-                        About Me
+                    <div class="glass-card p-8 rounded-3xl relative overflow-hidden group reveal">
+                        <span class="text-6xl font-black text-pastelSage/40 absolute top-4 right-6 group-hover:text-pastelOrange/30 transition-colors">03</span>
+                        <div class="relative z-10 space-y-3">
+                            <span class="px-3 py-1 rounded-full bg-pastelSage/30 text-pastelDeepMoss text-xs font-bold">Secondary</span>
+                            <h3 class="text-xl font-bold text-pastelDark pt-2">Secondary (X)</h3>
+                            <p class="text-sm text-pastelMoss font-medium">New English School</p>
+                            <p class="text-base font-extrabold text-pastelOrange">Percentage: 83.04%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                    <p class="text-sm font-extrabold uppercase tracking-widest text-pastelOrange mb-2">Technical Skills</p>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-pastelDark">Technologies & Expertise</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-card p-6 rounded-3xl reveal">
+                        <span class="text-2xl font-black text-pastelOrange mb-3 block">01</span>
+                        <h3 class="text-lg font-bold text-pastelDark mb-2">Programming Languages</h3>
+                        <p class="text-sm text-pastelDark/80 leading-relaxed">Python, Java, JavaScript (ES6+), C, C++ and SQL.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl reveal border-2 border-pastelOrange/30">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-2xl font-black text-pastelOrange block">02</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-pastelOrange/20 text-pastelDeepMoss text-xs font-bold">Updated</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-pastelDark mb-2">3D Graphics & Web Tech</h3>
+                        <p class="text-sm text-pastelDark/80 leading-relaxed">Three.js, WebGL 3D rendering, Canvas API, CSS 3D Transforms, Glassmorphism UI, HTML5, CSS3, JavaScript, React.js, Vite, Bootstrap, and Tailwind CSS.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl reveal">
+                        <span class="text-2xl font-black text-pastelOrange mb-3 block">03</span>
+                        <h3 class="text-lg font-bold text-pastelDark mb-2">Backend Development</h3>
+                        <p class="text-sm text-pastelDark/80 leading-relaxed">Python, Flask, REST APIs and SQLAlchemy for building web applications and backend logic.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl reveal">
+                        <span class="text-2xl font-black text-pastelOrange mb-3 block">04</span>
+                        <h3 class="text-lg font-bold text-pastelDark mb-2">Databases</h3>
+                        <p class="text-sm text-pastelDark/80 leading-relaxed">MySQL, SQLite and database design, including database integration with web applications.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl reveal">
+                        <span class="text-2xl font-black text-pastelOrange mb-3 block">05</span>
+                        <h3 class="text-lg font-bold text-pastelDark mb-2">Automation & Web Data</h3>
+                        <p class="text-sm text-pastelDark/80 leading-relaxed">Playwright, browser automation, web scraping, DOM parsing, JSON processing and automated workflows.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl reveal border-2 border-pastelSage/50">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-2xl font-black text-pastelOrange block">06</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-pastelSage/30 text-pastelDeepMoss text-xs font-bold">Interactive</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-pastelDark mb-2">Interactive UI & Animation</h3>
+                        <p class="text-sm text-pastelDark/80 leading-relaxed">CSS 3D Transforms, parallax cursor tracking, scroll-reveal triggers, Dynamic CSS Variables, DOM manipulation, form validation, search and filtering.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl reveal">
+                        <span class="text-2xl font-black text-pastelOrange mb-3 block">07</span>
+                        <h3 class="text-lg font-bold text-pastelDark mb-2">Data, Visualization & Tools</h3>
+                        <p class="text-sm text-pastelDark/80 leading-relaxed">Data analysis, data interpretation, Chart.js, Git, GitHub, Visual Studio Code and MS Excel.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl reveal">
+                        <span class="text-2xl font-black text-pastelOrange mb-3 block">08</span>
+                        <h3 class="text-lg font-bold text-pastelDark mb-2">Software Engineering</h3>
+                        <p class="text-sm text-pastelDark/80 leading-relaxed">Object-oriented programming, authentication, session management, debugging, version control, problem solving and logical reasoning.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20 px-6 bg-white/40 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                    <p class="text-sm font-extrabold uppercase tracking-widest text-pastelOrange mb-2">Featured Projects</p>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-pastelDark">Projects I've Built</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Project 1: Nexivara -->
+                    <article class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between group reveal">
+                        <div>
+                            <div class="h-44 bg-gradient-to-br from-pastelPeach to-pastelPink/70 flex items-center justify-center p-6 relative overflow-hidden">
+                                <span class="font-display font-extrabold text-2xl tracking-widest text-pastelDark bg-white/80 px-6 py-3 rounded-2xl shadow-sm transform group-hover:scale-105 transition-transform">NEXIVARA</span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <p class="text-xs font-extrabold uppercase tracking-wider text-pastelDeepMoss">Full-Stack Web Application</p>
+                                <h3 class="text-xl font-bold text-pastelDark">Nexivara – AI-Based Career Guidance Platform</h3>
+                                <p class="text-sm text-pastelDark/80 leading-relaxed">A full-stack career recommendation platform designed to help users explore jobs, internships, higher studies, courses and government career paths.</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 pt-2">
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Python</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Flask</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">SQLAlchemy</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">SQLite</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">JavaScript</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Bootstrap</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <a href="https://github.com/ananya30305/nexivara" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold text-pastelOrange hover:text-pastelPink transition-colors">
+                                <span>View on GitHub</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Project 2: Auto Listing Sync -->
+                    <article class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between group reveal">
+                        <div>
+                            <div class="h-44 bg-gradient-to-br from-pastelSage to-pastelMoss/60 flex items-center justify-center p-6 relative overflow-hidden">
+                                <span class="font-display font-extrabold text-2xl tracking-widest text-pastelDark bg-white/80 px-6 py-3 rounded-2xl shadow-sm transform group-hover:scale-105 transition-transform">AUTO LISTING SYNC</span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <p class="text-xs font-extrabold uppercase tracking-wider text-pastelDeepMoss">Python Automation Project</p>
+                                <h3 class="text-xl font-bold text-pastelDark">Auto Listing Sync: Cars.co.za to Web Portal</h3>
+                                <p class="text-sm text-pastelDark/80 leading-relaxed">A two-stage web scraping and browser automation pipeline that extracts used car listings and automates multi-step advertisement form filling on target web portals.</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 pt-2">
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Python</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Playwright</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Chromium</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">JSON</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <a href="https://github.com/ananya30305/car-ad-automation" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold text-pastelOrange hover:text-pastelPink transition-colors">
+                                <span>View on GitHub</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Project 3: Expense Tracker -->
+                    <article class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between group reveal">
+                        <div>
+                            <div class="h-44 bg-gradient-to-br from-pastelOrange/80 to-pastelPink/80 flex items-center justify-center p-6 relative overflow-hidden">
+                                <span class="font-display font-extrabold text-2xl tracking-widest text-pastelDark bg-white/80 px-6 py-3 rounded-2xl shadow-sm transform group-hover:scale-105 transition-transform">EXPENSE TRACKER</span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <p class="text-xs font-extrabold uppercase tracking-wider text-pastelDeepMoss">JavaScript Web Application</p>
+                                <h3 class="text-xl font-bold text-pastelDark">Personal Expense Tracker</h3>
+                                <p class="text-sm text-pastelDark/80 leading-relaxed">A responsive personal finance application for tracking income and expenses with transaction history, summary cards, editing, deletion and category filtering.</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 pt-2">
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">HTML5</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">CSS3</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">JavaScript</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Local Storage</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <a href="https://github.com/ananya30305/expense-tracker" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold text-pastelOrange hover:text-pastelPink transition-colors">
+                                <span>View on GitHub</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Project 4: Quiz App -->
+                    <article class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between group reveal">
+                        <div>
+                            <div class="h-44 bg-gradient-to-br from-pastelPeach to-pastelSage flex items-center justify-center p-6 relative overflow-hidden">
+                                <span class="font-display font-extrabold text-2xl tracking-widest text-pastelDark bg-white/80 px-6 py-3 rounded-2xl shadow-sm transform group-hover:scale-105 transition-transform">QUIZ APP</span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <p class="text-xs font-extrabold uppercase tracking-wider text-pastelDeepMoss">React Web Application</p>
+                                <h3 class="text-xl font-bold text-pastelDark">Interactive Quiz Application</h3>
+                                <p class="text-sm text-pastelDark/80 leading-relaxed">A responsive interactive quiz application built with React.js and JavaScript featuring questions, score tracking, result handling and restart functionality.</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 pt-2">
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">React</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">JavaScript</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">HTML</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">CSS</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <a href="https://github.com/ananya30305/QUIZ" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold text-pastelOrange hover:text-pastelPink transition-colors">
+                                <span>View on GitHub</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Project 5: 3D Portfolio -->
+                    <article class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between group reveal border-2 border-pastelOrange/50 shadow-pastel-glow">
+                        <div>
+                            <div class="h-44 bg-gradient-to-br from-pastelPink via-pastelOrange to-pastelPeach flex items-center justify-center p-6 relative overflow-hidden">
+                                <div class="absolute inset-0 bg-white/20 backdrop-blur-[2px]"></div>
+                                <span class="font-display font-extrabold text-2xl tracking-widest text-pastelDark bg-white/95 px-6 py-3 rounded-2xl shadow-md transform group-hover:scale-105 transition-transform relative z-10">3D LOTUS PORTFOLIO</span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-xs font-extrabold uppercase tracking-wider text-pastelDeepMoss">Interactive 3D Experience</p>
+                                    <span class="px-2.5 py-0.5 rounded-md bg-pastelOrange/20 text-pastelOrange text-[10px] font-extrabold uppercase tracking-wider">Featured</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-pastelDark">Portfolio Website</h3>
+                                <p class="text-sm text-pastelDark/80 leading-relaxed">A modern interactive portfolio featuring an ambient 3D blooming lotus scene rendered in Three.js, procedural petals, WebGL canvas lighting, Glassmorphism UI, CSS 3D tilt gestures, dynamic cursor tracking, and responsive design.</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 pt-2">
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelOrange/20 text-xs font-bold text-pastelDark">Three.js</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelOrange/20 text-xs font-bold text-pastelDark">WebGL</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">CSS 3D Transforms</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Canvas API</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Glassmorphism UI</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Responsive Design</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">GitHub Pages</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <a href="https://github.com/ananya30305/personal-portfolio" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold text-pastelOrange hover:text-pastelPink transition-colors">
+                                <span>View on GitHub</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Project 6: To-Do List -->
+                    <article class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between group reveal">
+                        <div>
+                            <div class="h-44 bg-gradient-to-br from-pastelMoss/80 to-pastelSage flex items-center justify-center p-6 relative overflow-hidden">
+                                <span class="font-display font-extrabold text-2xl tracking-widest text-pastelDark bg-white/80 px-6 py-3 rounded-2xl shadow-sm transform group-hover:scale-105 transition-transform">TO-DO LIST</span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <p class="text-xs font-extrabold uppercase tracking-wider text-pastelDeepMoss">JavaScript Web Application</p>
+                                <h3 class="text-xl font-bold text-pastelDark">To-Do List Application</h3>
+                                <p class="text-sm text-pastelDark/80 leading-relaxed">A responsive task management application with task creation, editing, deletion, completion tracking, Local Storage, search and filtering features.</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 pt-2">
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">HTML5</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">CSS3</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">JavaScript</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-pastelSage/30 text-xs font-semibold text-pastelDeepMoss">Local Storage</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <a href="https://github.com/ananya30305/todo-list" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold text-pastelOrange hover:text-pastelPink transition-colors">
+                                <span>View on GitHub</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="creative" class="py-20 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                    <p class="text-sm font-extrabold uppercase tracking-widest text-pastelOrange mb-2">Creative Pursuits</p>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-pastelDark">Beyond the Code</h2>
+                    <p class="text-base sm:text-lg text-pastelDark/80 mt-4 leading-relaxed">
+                        While my primary career focus is in <strong class="font-bold text-pastelDark">Software Engineering & IT</strong>, my creative pursuits hone my attention to detail, symmetry, spatial design, and user-centered aesthetic vision.
                     </p>
-
-
-                    <h2>
-                        Computer Science graduate focused on building practical solutions.
-                    </h2>
-
-
                 </div>
 
-
-
-                <div class="about-container">
-
-
-                    <div class="about-text reveal">
-
-
-                        <p>
-
-                            I am a BSc Computer Science and Mathematics graduate
-                            with a CGPA of 8.12. I have a strong foundation in
-                            programming, web development, databases, software
-                            engineering and data analysis.
-
-                        </p>
-
-
-                        <p>
-
-                            I enjoy developing practical applications that
-                            combine frontend interfaces with backend logic,
-                            databases and automation. My technical experience
-                            includes Python, Flask, JavaScript, SQL, MySQL,
-                            SQLite and REST API development.
-
-                        </p>
-
-
-                        <p>
-
-                            I am looking for an entry-level opportunity where
-                            I can apply my technical and analytical skills,
-                            contribute to real-world projects and continue
-                            growing as a software professional.
-
-                        </p>
-
-
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+                    <!-- Creative Item 1 -->
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between group h-full">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-pastelPeach/50 flex items-center justify-center text-pastelOrange text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-pen-nib"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-pastelDark">Drawing & Sketching</h3>
+                            <p class="text-sm text-pastelDark/80 leading-relaxed">
+                                Freehand sketching builds spatial reasoning, visual balance, and wireframe visualization—translating directly into intuitive UI/UX design.
+                            </p>
+                        </div>
+                        <span class="text-xs font-semibold text-pastelDeepMoss mt-6 pt-4 border-t border-pastelSage/30 block">Visual Precision & Proportions</span>
                     </div>
 
-
-
-                    <div class="stats-container reveal">
-
-
-                        <div class="stat-card">
-
-                            <h3>
-                                8.12
-                            </h3>
-
-                            <p>
-                                CGPA
+                    <!-- Creative Item 2 -->
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between group h-full">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-pastelPink/30 flex items-center justify-center text-pastelPink text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-hand-sparkles"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-pastelDark">Henna Art</h3>
+                            <p class="text-sm text-pastelDark/80 leading-relaxed">
+                                Crafting intricate, symmetrical henna motifs requires deep focus, steady execution, and fine-grained attention to detail.
                             </p>
-
                         </div>
-
-
-                        <div class="stat-card">
-
-                            <h3>
-                                2026
-                            </h3>
-
-                            <p>
-                                Graduate
-                            </p>
-
-                        </div>
-
-
-                        <div class="stat-card">
-
-                            <h3>
-                                6
-                            </h3>
-
-                            <p>
-                                Projects
-                            </p>
-
-                        </div>
-
-
+                        <span class="text-xs font-semibold text-pastelDeepMoss mt-6 pt-4 border-t border-pastelSage/30 block">Intricate Symmetry & Focus</span>
                     </div>
 
+                    <!-- Creative Item 3 -->
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between group h-full">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-pastelSage/40 flex items-center justify-center text-pastelDeepMoss text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-scissors"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-pastelDark">Sewing & Fashion Design</h3>
+                            <p class="text-sm text-pastelDark/80 leading-relaxed">
+                                Pattern drafting mirrors software architecture: converting abstract concepts into structured, functional end products.
+                            </p>
+                        </div>
+                        <span class="text-xs font-semibold text-pastelDeepMoss mt-6 pt-4 border-t border-pastelSage/30 block">Structured Design & Assembly</span>
+                    </div>
+
+                    <!-- Creative Item 4 -->
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between group h-full">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-pastelOrange/20 flex items-center justify-center text-pastelOrange text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-cubes"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-pastelDark">Creative 3D Web Coding</h3>
+                            <p class="text-sm text-pastelDark/80 leading-relaxed">
+                                Combining Three.js graphics, interactive canvas animations, and glassmorphism UI to make technical web tools visually engaging.
+                            </p>
+                        </div>
+                        <span class="text-xs font-semibold text-pastelDeepMoss mt-6 pt-4 border-t border-pastelSage/30 block">Interactive Web Art</span>
+                    </div>
                 </div>
-
             </div>
-
         </section>
 
-
-
-        <!-- =====================================
-             EDUCATION
-        ====================================== -->
-
-        <section class="section section-alt">
-
-
-            <div class="container">
-
-
-                <div class="section-heading reveal">
-
-
-                    <p class="eyebrow">
-                        Education
-                    </p>
-
-
-                    <h2>
-                        Academic Background
-                    </h2>
-
-
+        <section id="training" class="py-20 px-6 bg-white/40 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                    <p class="text-sm font-extrabold uppercase tracking-widest text-pastelOrange mb-2">Training & Certifications</p>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-pastelDark">Continuous Learning</h2>
                 </div>
 
-
-
-                <div class="skills-grid">
-
-
-                    <!-- Degree -->
-
-                    <div class="skill-card reveal">
-
-
-                        <span class="skill-number">
-                            01
-                        </span>
-
-
-                        <h3>
-                            BSc Computer Science & Mathematics
-                        </h3>
-
-
-                        <p>
-                            Mahatma Gandhi Memorial College
-                        </p>
-
-
-                        <p>
-                            2023 – 2026
-                        </p>
-
-
-                        <p>
-                            CGPA: 8.12
-                        </p>
-
-
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-pastelOrange uppercase tracking-wider block mb-1">01</span>
+                            <h3 class="text-xl font-extrabold text-pastelDark mb-2">Tata iQ</h3>
+                            <p class="text-sm text-pastelDark/80">GenAI Powered Data Analytics Job Simulation</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-pastelSage/30 flex items-center gap-2 text-xs text-pastelMoss font-semibold">
+                            <i class="fa-solid fa-award text-pastelOrange"></i> Verified Certificate
+                        </div>
                     </div>
 
-
-
-                    <!-- XII -->
-
-                    <div class="skill-card reveal">
-
-
-                        <span class="skill-number">
-                            02
-                        </span>
-
-
-                        <h3>
-                            Senior Secondary (XII)
-                        </h3>
-
-
-                        <p>
-                            SDM PU College
-                        </p>
-
-
-                        <p>
-                            Percentage: 80.17%
-                        </p>
-
-
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-pastelOrange uppercase tracking-wider block mb-1">02</span>
+                            <h3 class="text-xl font-extrabold text-pastelDark mb-2">Quantium</h3>
+                            <p class="text-sm text-pastelDark/80">Software Engineering Job Simulation</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-pastelSage/30 flex items-center gap-2 text-xs text-pastelMoss font-semibold">
+                            <i class="fa-solid fa-award text-pastelOrange"></i> Verified Certificate
+                        </div>
                     </div>
 
-
-
-                    <!-- X -->
-
-                    <div class="skill-card reveal">
-
-
-                        <span class="skill-number">
-                            03
-                        </span>
-
-
-                        <h3>
-                            Secondary (X)
-                        </h3>
-
-
-                        <p>
-                            New English School
-                        </p>
-
-
-                        <p>
-                            Percentage: 83.04%
-                        </p>
-
-
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-pastelOrange uppercase tracking-wider block mb-1">03</span>
+                            <h3 class="text-xl font-extrabold text-pastelDark mb-2">Deloitte Australia</h3>
+                            <p class="text-sm text-pastelDark/80">Data Analytics Job Simulation</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-pastelSage/30 flex items-center gap-2 text-xs text-pastelMoss font-semibold">
+                            <i class="fa-solid fa-award text-pastelOrange"></i> Verified Certificate
+                        </div>
                     </div>
 
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-pastelOrange uppercase tracking-wider block mb-1">04</span>
+                            <h3 class="text-xl font-extrabold text-pastelDark mb-2">Oracle University</h3>
+                            <p class="text-sm text-pastelDark/80">Oracle Cloud Application Development Explorer</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-pastelSage/30 flex items-center gap-2 text-xs text-pastelMoss font-semibold">
+                            <i class="fa-solid fa-award text-pastelOrange"></i> Verified Certificate
+                        </div>
+                    </div>
 
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-pastelOrange uppercase tracking-wider block mb-1">05</span>
+                            <h3 class="text-xl font-extrabold text-pastelDark mb-2">Oracle University</h3>
+                            <p class="text-sm text-pastelDark/80">Oracle Cloud Infrastructure Foundations Associate</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-pastelSage/30 flex items-center gap-2 text-xs text-pastelMoss font-semibold">
+                            <i class="fa-solid fa-award text-pastelOrange"></i> Verified Certificate
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-pastelOrange uppercase tracking-wider block mb-1">06</span>
+                            <h3 class="text-xl font-extrabold text-pastelDark mb-2">freeCodeCamp</h3>
+                            <p class="text-sm text-pastelDark/80">Data Analysis with Python</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-pastelSage/30 flex items-center gap-2 text-xs text-pastelMoss font-semibold">
+                            <i class="fa-solid fa-award text-pastelOrange"></i> Verified Certificate
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-pastelOrange uppercase tracking-wider block mb-1">07</span>
+                            <h3 class="text-xl font-extrabold text-pastelDark mb-2">Google & Kaggle</h3>
+                            <p class="text-sm text-pastelDark/80">5-Day AI Agents Intensive Course</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-pastelSage/30 flex items-center gap-2 text-xs text-pastelMoss font-semibold">
+                            <i class="fa-solid fa-award text-pastelOrange"></i> Verified Certificate
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl reveal flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-pastelOrange uppercase tracking-wider block mb-1">08</span>
+                            <h3 class="text-xl font-extrabold text-pastelDark mb-2">J.P. Morgan</h3>
+                            <p class="text-sm text-pastelDark/80">Software Engineering Job Simulation</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-pastelSage/30 flex items-center gap-2 text-xs text-pastelMoss font-semibold">
+                            <i class="fa-solid fa-award text-pastelOrange"></i> Verified Certificate
+                        </div>
+                    </div>
                 </div>
-
             </div>
-
         </section>
 
-
-
-        <!-- =====================================
-     SKILLS
-====================================== -->
-
-<section
-    id="skills"
-    class="section"
->
-
-    <div class="container">
-
-
-        <div class="section-heading reveal">
-
-
-            <p class="eyebrow">
-                Technical Skills
-            </p>
-
-
-            <h2>
-                Technologies & Skills
-            </h2>
-
-
-        </div>
-
-
-
-        <div class="skills-grid">
-
-
-            <!-- Programming Languages -->
-
-            <div class="skill-card reveal">
-
-                <span class="skill-number">
-                    01
-                </span>
-
-                <h3>
-                    Programming Languages
-                </h3>
-
-                <p>
-                    Python, Java, JavaScript, C, C++ and SQL.
+        <section id="resume" class="py-20 px-6 bg-gradient-to-r from-pastelSage/30 via-pastelPeach/30 to-pastelPink/30 my-12">
+            <div class="max-w-5xl mx-auto glass-card p-10 sm:p-14 rounded-3xl text-center space-y-6 reveal border-2 border-white">
+                <p class="text-sm font-extrabold uppercase tracking-widest text-pastelOrange">Resume</p>
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-pastelDark">Interested in my profile?</h2>
+                <p class="text-base sm:text-lg text-pastelDark/80 max-w-2xl mx-auto">
+                    Download my resume to learn more about my education, technical skills, projects, training and professional profile.
                 </p>
-
-            </div>
-
-
-
-            <!-- Frontend Development -->
-
-            <div class="skill-card reveal">
-
-                <span class="skill-number">
-                    02
-                </span>
-
-                <h3>
-                    Frontend Development
-                </h3>
-
-                <p>
-                    HTML5, CSS3, JavaScript, React.js,
-                    Vite, Bootstrap and responsive web design.
-                </p>
-
-            </div>
-
-
-
-            <!-- Backend Development -->
-
-            <div class="skill-card reveal">
-
-                <span class="skill-number">
-                    03
-                </span>
-
-                <h3>
-                    Backend Development
-                </h3>
-
-                <p>
-                    Python, Flask, REST APIs and SQLAlchemy
-                    for building web applications and backend logic.
-                </p>
-
-            </div>
-
-
-
-            <!-- Databases -->
-
-            <div class="skill-card reveal">
-
-                <span class="skill-number">
-                    04
-                </span>
-
-                <h3>
-                    Databases
-                </h3>
-
-                <p>
-                    MySQL, SQLite and database design,
-                    including database integration with web applications.
-                </p>
-
-            </div>
-
-
-
-            <!-- Automation & Web Data -->
-
-            <div class="skill-card reveal">
-
-                <span class="skill-number">
-                    05
-                </span>
-
-                <h3>
-                    Automation & Web Data
-                </h3>
-
-                <p>
-                    Playwright, browser automation, web scraping,
-                    DOM parsing, JSON processing and automated workflows.
-                </p>
-
-            </div>
-
-
-
-            <!-- Web Application Development -->
-
-            <div class="skill-card reveal">
-
-                <span class="skill-number">
-                    06
-                </span>
-
-                <h3>
-                    Web Application Development
-                </h3>
-
-                <p>
-                    CRUD operations, Local Storage, form validation,
-                    search and filtering, dynamic UI updates
-                    and responsive interfaces.
-                </p>
-
-            </div>
-
-
-
-            <!-- Data, Visualization & Tools -->
-
-            <div class="skill-card reveal">
-
-                <span class="skill-number">
-                    07
-                </span>
-
-                <h3>
-                    Data, Visualization & Tools
-                </h3>
-
-                <p>
-                    Data analysis, data interpretation, Chart.js,
-                    Git, GitHub, Visual Studio Code and MS Excel.
-                </p>
-
-            </div>
-
-
-
-            <!-- Software Engineering -->
-
-            <div class="skill-card reveal">
-
-                <span class="skill-number">
-                    08
-                </span>
-
-                <h3>
-                    Software Engineering
-                </h3>
-
-                <p>
-                    Object-oriented programming, authentication,
-                    session management, debugging, version control,
-                    problem solving and logical reasoning.
-                </p>
-
-            </div>
-
-
-
-        </div>
-
-    </div>
-
-</section>
-
-
-        <!-- =====================================
-             PROJECTS
-        ====================================== -->
-
-        <section
-            id="projects"
-            class="section section-alt"
-        >
-
-            <div class="container">
-
-
-                <div class="section-heading reveal">
-
-
-                    <p class="eyebrow">
-                        Featured Projects
-                    </p>
-
-
-                    <h2>
-                        Projects I've Built
-                    </h2>
-
-
-                </div>
-
-
-
-                <div class="projects-grid">
-
-
-                    <!-- =================================
-                         PROJECT 1 - NEXIVARA
-                    ================================== -->
-
-                    <article class="project-card reveal">
-
-
-                        <div class="project-image flask-image">
-
-                            <span>
-                                NEXIVARA
-                            </span>
-
-                        </div>
-
-
-                        <div class="project-content">
-
-
-                            <p class="project-type">
-                                Full-Stack Web Application
-                            </p>
-
-
-                            <h3>
-                                Nexivara – AI-Based Career Guidance Platform
-                            </h3>
-
-
-                            <p>
-
-                                A full-stack career recommendation platform
-                                designed to help users explore jobs, internships,
-                                higher studies, courses and government career paths.
-
-                            </p>
-
-
-                            <div class="project-tags">
-
-                                <span>Python</span>
-                                <span>Flask</span>
-                                <span>SQLAlchemy</span>
-                                <span>SQLite</span>
-                                <span>JavaScript</span>
-                                <span>Bootstrap</span>
-                                <span>Chart.js</span>
-
-                            </div>
-
-
-                            <a
-                                href="https://github.com/ananya30305/nexivara"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="project-link"
-                            >
-                                View on GitHub →
-                            </a>
-
-
-                        </div>
-
-                    </article>
-
-
-
-                    <!-- =================================
-                         PROJECT 2 - CAR AUTOMATION
-                    ================================== -->
-
-                    <article class="project-card reveal">
-
-
-                        <div class="project-image automation-image">
-
-                            <span>
-                                AUTO LISTING SYNC
-                            </span>
-
-                        </div>
-
-
-                        <div class="project-content">
-
-
-                            <p class="project-type">
-                                Python Automation Project
-                            </p>
-
-
-                            <h3>
-                                Auto Listing Sync: Cars.co.za to Web Portal
-                            </h3>
-
-
-                            <p>
-
-                                A two-stage web scraping and browser automation
-                                pipeline that extracts used car listings and
-                                automates multi-step advertisement form filling
-                                on target web portals.
-
-                            </p>
-
-
-                            <div class="project-tags">
-
-                                <span>Python</span>
-                                <span>Playwright</span>
-                                <span>Chromium</span>
-                                <span>JSON</span>
-                                <span>DOM Parsing</span>
-                                <span>Git</span>
-
-                            </div>
-
-
-                            <a
-                                href="https://github.com/ananya30305/car-ad-automation"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="project-link"
-                            >
-                                View on GitHub →
-                            </a>
-
-
-                        </div>
-
-                    </article>
-
-
-
-                    <!-- =================================
-                         PROJECT 3 - EXPENSE TRACKER
-                    ================================== -->
-
-                    <article class="project-card reveal">
-
-
-                        <div class="project-image web-image">
-
-                            <span>
-                                EXPENSE TRACKER
-                            </span>
-
-                        </div>
-
-
-                        <div class="project-content">
-
-
-                            <p class="project-type">
-                                JavaScript Web Application
-                            </p>
-
-
-                            <h3>
-                                Personal Expense Tracker
-                            </h3>
-
-
-                            <p>
-
-                                A responsive personal finance application
-                                for tracking income and expenses with
-                                transaction history, summary cards,
-                                editing, deletion and category filtering.
-
-                            </p>
-
-
-                            <div class="project-tags">
-
-                                <span>HTML5</span>
-                                <span>CSS3</span>
-                                <span>JavaScript</span>
-                                <span>Local Storage</span>
-                                <span>Responsive Design</span>
-
-                            </div>
-
-
-                            <a
-                                href="https://github.com/ananya30305/expense-tracker"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="project-link"
-                            >
-                                View on GitHub →
-                            </a>
-
-
-                        </div>
-
-                    </article>
-
-
-
-                    <!-- =================================
-                         PROJECT 4 - QUIZ
-                    ================================== -->
-
-                    <article class="project-card reveal">
-
-
-                        <div class="project-image quiz-image">
-
-                            <span>
-                                QUIZ APP
-                            </span>
-
-                        </div>
-
-
-                        <div class="project-content">
-
-
-                            <p class="project-type">
-                                React Web Application
-                            </p>
-
-
-                            <h3>
-                                Interactive Quiz Application
-                            </h3>
-
-
-                            <p>
-
-                                A responsive interactive quiz application
-                                built with React.js and JavaScript featuring
-                                questions, score tracking, result handling
-                                and restart functionality.
-
-                            </p>
-
-
-                            <div class="project-tags">
-
-                                <span>React</span>
-                                <span>JavaScript</span>
-                                <span>HTML</span>
-                                <span>CSS</span>
-
-                            </div>
-
-
-                            <a
-                                href="https://github.com/ananya30305/QUIZ"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="project-link"
-                            >
-                                View on GitHub →
-                            </a>
-
-
-                        </div>
-
-                    </article>
-
-
-
-                    <!-- =================================
-                         PROJECT 5 - PERSONAL PORTFOLIO
-                    ================================== -->
-
-                    <article class="project-card reveal">
-
-
-                        <div class="project-image web-image">
-
-                            <span>
-                                MY PORTFOLIO
-                            </span>
-
-                        </div>
-
-
-                        <div class="project-content">
-
-
-                            <p class="project-type">
-                                Frontend Web Development
-                            </p>
-
-
-                            <h3>
-                                Personal Portfolio Website
-                            </h3>
-
-
-                            <p>
-
-                                A modern responsive portfolio website
-                                built to showcase my education, technical
-                                skills, projects, certifications and
-                                professional profile.
-
-                            </p>
-
-
-                            <div class="project-tags">
-
-                                <span>HTML5</span>
-                                <span>CSS3</span>
-                                <span>JavaScript</span>
-                                <span>Responsive Design</span>
-                                <span>GitHub Pages</span>
-
-                            </div>
-
-
-                            <a
-                                href="https://github.com/ananya30305/personal-portfolio"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="project-link"
-                            >
-                                View on GitHub →
-                            </a>
-
-
-                        </div>
-
-                    </article>
-
-
-
-                    <!-- =================================
-                         PROJECT 6 - TO-DO LIST
-                    ================================== -->
-
-                    <article class="project-card reveal">
-
-
-                        <div class="project-image web-image">
-
-                            <span>
-                                TO-DO LIST
-                            </span>
-
-                        </div>
-
-
-                        <div class="project-content">
-
-
-                            <p class="project-type">
-                                JavaScript Web Application
-                            </p>
-
-
-                            <h3>
-                                To-Do List Application
-                            </h3>
-
-
-                            <p>
-
-                                A responsive task management application
-                                with task creation, editing, deletion,
-                                completion tracking, Local Storage,
-                                search and filtering features.
-
-                            </p>
-
-
-                            <div class="project-tags">
-
-                                <span>HTML5</span>
-                                <span>CSS3</span>
-                                <span>JavaScript</span>
-                                <span>Local Storage</span>
-                                <span>Responsive Design</span>
-
-                            </div>
-
-
-                            <a
-                                href="https://github.com/ananya30305/todo-list"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="project-link"
-                            >
-                                View on GitHub →
-                            </a>
-
-
-                        </div>
-
-                    </article>
-
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================================
-             TRAINING & CERTIFICATIONS
-        ====================================== -->
-
-        <section
-            id="training"
-            class="section"
-        >
-
-            <div class="container">
-
-
-                <div class="section-heading reveal">
-
-
-                    <p class="eyebrow">
-                        Training & Certifications
-                    </p>
-
-
-                    <h2>
-                        Continuous Learning
-                    </h2>
-
-
-                </div>
-
-
-
-                <div class="skills-grid">
-
-
-                    <!-- Tata iQ -->
-
-                    <div class="skill-card reveal">
-
-                        <span class="skill-number">
-                            01
-                        </span>
-
-                        <h3>
-                            Tata iQ
-                        </h3>
-
-                        <p>
-                            GenAI Powered Data Analytics Job Simulation
-                        </p>
-
-                    </div>
-
-
-                    <!-- Quantium -->
-
-                    <div class="skill-card reveal">
-
-                        <span class="skill-number">
-                            02
-                        </span>
-
-                        <h3>
-                            Quantium
-                        </h3>
-
-                        <p>
-                            Software Engineering Job Simulation
-                        </p>
-
-                    </div>
-
-
-                    <!-- Deloitte -->
-
-                    <div class="skill-card reveal">
-
-                        <span class="skill-number">
-                            03
-                        </span>
-
-                        <h3>
-                            Deloitte Australia
-                        </h3>
-
-                        <p>
-                            Data Analytics Job Simulation
-                        </p>
-
-                    </div>
-
-
-                    <!-- Oracle Application -->
-
-                    <div class="skill-card reveal">
-
-                        <span class="skill-number">
-                            04
-                        </span>
-
-                        <h3>
-                            Oracle University
-                        </h3>
-
-                        <p>
-                            Oracle Cloud Application Development Explorer
-                        </p>
-
-                    </div>
-
-
-                    <!-- Oracle OCI -->
-
-                    <div class="skill-card reveal">
-
-                        <span class="skill-number">
-                            05
-                        </span>
-
-                        <h3>
-                            Oracle University
-                        </h3>
-
-                        <p>
-                            Oracle Cloud Infrastructure Foundations Associate
-                        </p>
-
-                    </div>
-
-
-                    <!-- freeCodeCamp -->
-
-                    <div class="skill-card reveal">
-
-                        <span class="skill-number">
-                            06
-                        </span>
-
-                        <h3>
-                            freeCodeCamp
-                        </h3>
-
-                        <p>
-                            Data Analysis with Python
-                        </p>
-
-                    </div>
-
-
-                    <!-- Google & Kaggle -->
-
-                    <div class="skill-card reveal">
-
-                        <span class="skill-number">
-                            07
-                        </span>
-
-                        <h3>
-                            Google & Kaggle
-                        </h3>
-
-                        <p>
-                            5-Day AI Agents Intensive Course
-                        </p>
-
-                    </div>
-
-
-                    <!-- J.P. Morgan -->
-
-                    <div class="skill-card reveal">
-
-                        <span class="skill-number">
-                            08
-                        </span>
-
-                        <h3>
-                            J.P. Morgan
-                        </h3>
-
-                        <p>
-                            Software Engineering Job Simulation
-                        </p>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================================
-             RESUME
-        ====================================== -->
-
-        <section
-            id="resume"
-            class="section section-alt"
-        >
-
-            <div class="container">
-
-
-                <div class="resume-container reveal">
-
-
-                    <div class="resume-content">
-
-
-                        <p class="eyebrow">
-                            Resume
-                        </p>
-
-
-                        <h2>
-                            Interested in my profile?
-                        </h2>
-
-
-                        <p>
-
-                            Download my resume to learn more about
-                            my education, technical skills, projects,
-                            training and professional profile.
-
-                        </p>
-
-
-                    </div>
-
-
-                    <a
-                        href="resume.pdf"
-                        download="Ananya-P-Resume.pdf"
-                        class="btn primary-btn"
-                    >
-                        Download Resume
+                <div class="pt-4">
+                    <a href="resume.pdf" download="Ananya-P-Resume.pdf" class="inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-gradient-to-r from-pastelOrange to-pastelPink text-white font-extrabold text-lg shadow-pastel-glow hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-file-arrow-down text-xl"></i>
+                        <span>Download Resume</span>
                     </a>
-
-
                 </div>
-
             </div>
-
         </section>
 
-
-
-        <!-- =====================================
-             CONTACT
-        ====================================== -->
-
-        <section
-            id="contact"
-            class="section"
-        >
-
-            <div class="container contact-container">
-
-
-                <div class="contact-info reveal">
-
-
-                    <p class="eyebrow">
-                        Get In Touch
-                    </p>
-
-
-                    <h2>
-                        Let's connect.
-                    </h2>
-
-
-                    <p>
-
-                        I am open to entry-level opportunities,
-                        internships and software development roles
-                        where I can apply my skills and continue learning.
-
-                    </p>
-
-
-                    <!-- Email -->
-
-                    <div class="contact-detail">
-
-                        <strong>
-                            Email
-                        </strong>
-
-                        <span>
-                            <a href="mailto:pandit05ananya@gmail.com">
-                                pandit05ananya@gmail.com
-                            </a>
-                        </span>
-
+        <section id="contact" class="py-20 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid md:grid-cols-12 gap-12 items-center">
+                    <div class="md:col-span-5 space-y-6 reveal">
+                        <p class="text-sm font-extrabold uppercase tracking-widest text-pastelOrange">Get In Touch</p>
+                        <h2 class="text-4xl sm:text-6xl font-extrabold text-pastelDark">Let's connect.</h2>
+                        <p class="text-base sm:text-lg text-pastelDark/80">
+                            I am open to entry-level software engineering opportunities, developer roles, and technical internships.
+                        </p>
                     </div>
 
+                    <div class="md:col-span-7 grid sm:grid-cols-2 gap-6 reveal">
+                        <div class="glass-card p-6 rounded-3xl flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-pastelOrange/20 flex items-center justify-center text-pastelOrange text-xl shrink-0">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <strong class="text-xs uppercase tracking-wider text-pastelMoss block mb-1">Email</strong>
+                                <a href="mailto:pandit05ananya@gmail.com" class="text-sm font-bold text-pastelDark hover:text-pastelOrange transition-colors break-all">
+                                    pandit05ananya@gmail.com
+                                </a>
+                            </div>
+                        </div>
 
-                    <!-- GitHub -->
+                        <div class="glass-card p-6 rounded-3xl flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-pastelSage/30 flex items-center justify-center text-pastelDeepMoss text-xl shrink-0">
+                                <i class="fa-brands fa-github"></i>
+                            </div>
+                            <div>
+                                <strong class="text-xs uppercase tracking-wider text-pastelMoss block mb-1">GitHub</strong>
+                                <a href="https://github.com/ananya30305" target="_blank" rel="noopener noreferrer" class="text-sm font-bold text-pastelDark hover:text-pastelOrange transition-colors break-all">
+                                    github.com/ananya30305
+                                </a>
+                            </div>
+                        </div>
 
-                    <div class="contact-detail">
+                        <div class="glass-card p-6 rounded-3xl flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-pastelPink/20 flex items-center justify-center text-pastelPink text-xl shrink-0">
+                                <i class="fa-brands fa-linkedin"></i>
+                            </div>
+                            <div>
+                                <strong class="text-xs uppercase tracking-wider text-pastelMoss block mb-1">LinkedIn</strong>
+                                <a href="https://linkedin.com/in/ananya-p-6b65b02b4" target="_blank" rel="noopener noreferrer" class="text-sm font-bold text-pastelDark hover:text-pastelOrange transition-colors break-all">
+                                    linkedin.com/in/ananya-p-6b65b02b4
+                                </a>
+                            </div>
+                        </div>
 
-                        <strong>
-                            GitHub
-                        </strong>
-
-                        <span>
-
-                            <a
-                                href="https://github.com/ananya30305"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                github.com/ananya30305
-                            </a>
-
-                        </span>
-
+                        <div class="glass-card p-6 rounded-3xl flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-pastelPeach/40 flex items-center justify-center text-pastelOrange text-xl shrink-0">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <strong class="text-xs uppercase tracking-wider text-pastelMoss block mb-1">Location</strong>
+                                <span class="text-sm font-bold text-pastelDark">India</span>
+                            </div>
+                        </div>
                     </div>
-
-
-                    <!-- LinkedIn -->
-
-                    <div class="contact-detail">
-
-                        <strong>
-                            LinkedIn
-                        </strong>
-
-                        <span>
-
-                            <a
-                                href="https://linkedin.com/in/ananya-p-6b65b02b4"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                linkedin.com/in/ananya-p-6b65b02b4
-                            </a>
-
-                        </span>
-
-                    </div>
-
-
-                    <!-- Location -->
-
-                    <div class="contact-detail">
-
-                        <strong>
-                            Location
-                        </strong>
-
-                        <span>
-                            India
-                        </span>
-
-                    </div>
-
-
                 </div>
-
             </div>
-
         </section>
-
 
     </main>
 
-
-
-    <!-- =====================================
-         BACK TO TOP
-    ====================================== -->
-
-    <button
-        class="top-btn"
-        id="topBtn"
-        type="button"
-        aria-label="Back to top"
-    >
-        ↑
-    </button>
-
-
-
-    <!-- =====================================
-         FOOTER
-    ====================================== -->
-
-    <footer>
-
-        <div class="container footer-content">
-
-            <p>
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-pastelSage/30 bg-white/60 backdrop-blur-md py-8 px-6 mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <p class="text-sm font-medium text-pastelDark/70">
                 © 2026 Ananya P. All rights reserved.
             </p>
-
-
-            <a href="#home">
-                Back to top ↑
+            <a href="#home" class="text-sm font-bold text-pastelOrange hover:text-pastelPink transition-colors flex items-center gap-1">
+                <span>Back to top</span>
+                <i class="fa-solid fa-arrow-up"></i>
             </a>
-
         </div>
-
     </footer>
 
+    <!-- Back to top button -->
+    <button id="topBtn" type="button" aria-label="Back to top" class="fixed bottom-8 right-8 z-50 p-4 rounded-2xl bg-gradient-to-r from-pastelOrange to-pastelPink text-white shadow-pastel-glow opacity-0 pointer-events-none transition-all duration-300 hover:scale-110">
+        <i class="fa-solid fa-arrow-up text-lg"></i>
+    </button>
 
+    <script>
+        /* =========================================================
+           1. THREE.JS PROCEDURAL 3D BLOOMING LOTUS BACKGROUND
+           ========================================================= */
+        let scene, camera, renderer, lotusGroup, petals = [];
+        let mouseX = 0, mouseY = 0;
 
-    <!-- =====================================
-         JAVASCRIPT
-    ====================================== -->
+        function createPetalMesh(length, width, colorHex) {
+            const shape = new THREE.Shape();
+            shape.moveTo(0, 0);
+            shape.quadraticCurveTo(width / 2, length * 0.4, width / 2, length * 0.7);
+            shape.quadraticCurveTo(width / 4, length, 0, length * 1.15);
+            shape.quadraticCurveTo(-width / 4, length, -width / 2, length * 0.7);
+            shape.quadraticCurveTo(-width / 2, length * 0.4, 0, 0);
 
-    <script src="script.js"></script>
+            const extrudeSettings = {
+                depth: 0.15,
+                bevelEnabled: true,
+                bevelSegments: 4,
+                steps: 1,
+                bevelSize: 0.08,
+                bevelThickness: 0.08
+            };
 
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            geometry.translate(0, 0, 0);
+
+            const material = new THREE.MeshPhongMaterial({
+                color: colorHex,
+                shininess: 30,
+                transparent: true,
+                opacity: 0.88,
+                side: THREE.DoubleSide
+            });
+
+            return new THREE.Mesh(geometry, material);
+        }
+
+        function init3D() {
+            const canvas = document.getElementById('bg-canvas');
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 8, 38);
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            lotusGroup = new THREE.Group();
+            lotusGroup.position.set(0, -6, 0);
+            lotusGroup.rotation.x = 0.45;
+            scene.add(lotusGroup);
+
+            const petalOuterColor = 0xF98B88;
+            const petalMidColor = 0xFBAF67;
+            const petalInnerColor = 0xFCD8AC;
+            const leafColor = 0x8FA368;
+
+            const padShape = new THREE.Shape();
+            padShape.absarc(0, 0, 11, 0.25, Math.PI * 1.95, false);
+            padShape.lineTo(0, 0);
+            const padGeo = new THREE.ShapeGeometry(padShape);
+            const padMat = new THREE.MeshPhongMaterial({ color: leafColor, side: THREE.DoubleSide, transparent: true, opacity: 0.65 });
+            const lilyPad = new THREE.Mesh(padGeo, padMat);
+            lilyPad.rotation.x = -Math.PI / 2;
+            lilyPad.position.y = -0.6;
+            lotusGroup.add(lilyPad);
+
+            const layers = [
+                { count: 12, length: 7.5, width: 2.8, angleOffset: 0.85, color: petalOuterColor },
+                { count: 10, length: 6.2, width: 2.3, angleOffset: 0.60, color: petalMidColor },
+                { count: 8,  length: 4.8, width: 1.8, angleOffset: 0.35, color: petalInnerColor }
+            ];
+
+            layers.forEach((layer) => {
+                for (let i = 0; i < layer.count; i++) {
+                    const angle = (i / layer.count) * Math.PI * 2;
+                    const petal = createPetalMesh(layer.length, layer.width, layer.color);
+
+                    const petalPivot = new THREE.Group();
+                    petalPivot.rotation.y = angle;
+                    petalPivot.add(petal);
+
+                    petal.rotation.x = layer.angleOffset;
+
+                    petal.userData = {
+                        baseAngle: layer.angleOffset,
+                        bloomRange: 0.35,
+                        speed: 0.001 + Math.random() * 0.001
+                    };
+
+                    petals.push(petal);
+                    lotusGroup.add(petalPivot);
+                }
+            });
+
+            const stamenGeo = new THREE.CylinderGeometry(1.2, 0.8, 1.2, 16);
+            const stamenMat = new THREE.MeshPhongMaterial({ color: 0xFCD8AC, shininess: 50 });
+            const stamen = new THREE.Mesh(stamenGeo, stamenMat);
+            stamen.position.y = 0.5;
+            lotusGroup.add(stamen);
+
+            const floatingPetalsGroup = new THREE.Group();
+            scene.add(floatingPetalsGroup);
+
+            for (let i = 0; i < 22; i++) {
+                const floatPetal = createPetalMesh(2.2 + Math.random(), 0.9 + Math.random() * 0.5, petalMidColor);
+                floatPetal.position.set(
+                    (Math.random() - 0.5) * 60,
+                    (Math.random() - 0.5) * 50,
+                    (Math.random() - 0.5) * 30
+                );
+                floatPetal.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+                floatPetal.userData = {
+                    rotX: (Math.random() - 0.5) * 0.008,
+                    rotY: (Math.random() - 0.5) * 0.008,
+                    speedY: 0.005 + Math.random() * 0.008
+                };
+                floatingPetalsGroup.add(floatPetal);
+            }
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+            scene.add(ambientLight);
+
+            const sunLight = new THREE.DirectionalLight(0xfff4e5, 0.8);
+            sunLight.position.set(15, 25, 20);
+            scene.add(sunLight);
+
+            const softGreenLight = new THREE.DirectionalLight(0xc7d39c, 0.5);
+            softGreenLight.position.set(-15, -10, -10);
+            scene.add(softGreenLight);
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = Date.now() * 0.001;
+
+            if (lotusGroup) {
+                lotusGroup.rotation.y = time * 0.08 + (mouseX * 0.25);
+                lotusGroup.rotation.x = 0.45 + (mouseY * 0.12);
+                lotusGroup.position.y = -6 + Math.sin(time * 0.8) * 0.4;
+            }
+
+            const bloomCycle = Math.sin(time * 0.5) * 0.5 + 0.5;
+            petals.forEach(petal => {
+                petal.rotation.x = petal.userData.baseAngle + (bloomCycle * petal.userData.bloomRange);
+            });
+
+            scene.traverse((object) => {
+                if (object.userData && object.userData.speedY) {
+                    object.rotation.x += object.userData.rotX;
+                    object.rotation.y += object.userData.rotY;
+                    object.position.y += Math.sin(time + object.position.x) * 0.008;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        /* =========================================================
+           2. UI INTERACTION & SCROLL REVEAL SCRIPT
+           ========================================================= */
+        window.onload = function () {
+            init3D();
+            animate();
+
+            // Automatic entrance sequence for profile avatar frame
+            setTimeout(() => {
+                const avatarContainer = document.getElementById('avatarContainer');
+                if (avatarContainer) {
+                    avatarContainer.classList.remove('opacity-0', 'scale-90');
+                    avatarContainer.classList.add('opacity-100', 'scale-100');
+                }
+            }, 300);
+
+            // Mobile Menu Toggle
+            const menuBtn = document.getElementById('menuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuIcon = document.getElementById('menuIcon');
+
+            menuBtn.addEventListener('click', function () {
+                const isOpen = !mobileMenu.classList.contains('hidden');
+                if (isOpen) {
+                    mobileMenu.classList.add('hidden');
+                    menuIcon.className = 'fa-solid fa-bars text-xl';
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                } else {
+                    mobileMenu.classList.remove('hidden');
+                    menuIcon.className = 'fa-solid fa-xmark text-xl';
+                    menuBtn.setAttribute('aria-expanded', 'true');
+                }
+            });
+
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    menuIcon.className = 'fa-solid fa-bars text-xl';
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                });
+            });
+
+            // Intersection Observer for scroll triggers
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            reveals.forEach(reveal => observer.observe(reveal));
+
+            // Back to Top button
+            const topBtn = document.getElementById('topBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 400) {
+                    topBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    topBtn.classList.add('opacity-100', 'pointer-events-auto');
+                } else {
+                    topBtn.classList.add('opacity-0', 'pointer-events-none');
+                    topBtn.classList.remove('opacity-100', 'pointer-events-auto');
+                }
+            });
+
+            topBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Glassmorphic 3D Card Parallax Tilt Effect
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -6;
+                    const rotateY = ((x - centerX) / centerX) * 6;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(8px)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+                });
+            });
+        };
+    </script>
 </body>
 
 </html>
